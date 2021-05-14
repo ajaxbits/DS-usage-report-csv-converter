@@ -53,7 +53,7 @@ def k_row_function(l2, k1):
 
 
 def extrapolate_column(data_frame: pd.DataFrame, column: str):
-    return data_frame[column][12:28]
+    return data_frame[column].str[12:24]
 
 
 def accounts_extrapolated(data_frame):

@@ -42,22 +42,26 @@ class TestExtrapolate(unittest.TestCase):
         result_df["C"] = extrapolate_column(df, "B")
         self.assertEqual(result_df.values.all(), desired_df.values.all())
 
-    # def test_full_functionality(self):
-    #     df = pd.DataFrame(
-    #         {
-    #             "A": [1, 2, 3],
-    #             "Computer Group": ["123456789012345678901234567890123", "123", "as"],
-    #             "Cloud Account": ["duhduhduh", "helloworld", "12345"],
-    #         }
-    #     )
-    #     desired_df = pd.DataFrame(
-    #         {
-    #             "A": [1, 2, 3],
-    #             "Computer Group": ["123456789012345678901234567890123", "123", "as"],
-    #             "Cloud Account": ["duhduhduh", "helloworld", "12345"],
-    #             "Cloud Account Extrapolated": [],
-    #         }
-    #     )
+    def test_full_functionality(self):
+        df = pd.DataFrame(
+            {
+                "A": [1, 2, 3],
+                "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+                "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+            }
+        )
+        desired_df = pd.DataFrame(
+            {
+                "A": [1, 2, 3],
+                "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+                "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+                "Cloud Account Extrapolated": ["345678901234", np.nan, np.nan],
+            }
+        )
+        result = accounts_extrapolated(df)
+        self.assertEqual(
+            accounts_extrapolated(df).values.all(), desired_df.values.all()
+        )
 
 
 if __name__ == "__main__":
