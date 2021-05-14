@@ -46,14 +46,24 @@ def l_row_function(
 
 
 def k_row_function(l2, k1):
-    if l2 == "":
+    if np.isnan(l2):
         return k1
     else:
         return l2
 
 
 def extrapolate_column(data_frame: pd.DataFrame, column: str):
-    return data_frame[column][11:13]
+    return data_frame[column][12:28]
+
+
+def accounts_extrapolated(data_frame):
+    mask = data_frame["Computer Group"].str.len() > 30
+    data_frame_to_extrapolate = data_frame[mask]
+
+    data_frame.loc[mask, "Cloud Account Extrapolated"] = extrapolate_column(
+        data_frame_to_extrapolate, "Cloud Account"
+    )
+    return data_frame
 
 
 df = pd.read_csv("Original 2021-04_securitymoduleusage.csv")
@@ -68,6 +78,4 @@ no_fly_list = [
 ]
 
 print(df)
-df["test"] = df["Computer Group"][11:13]
-
-print(df["test"])
+df["test"] = extrapolate_column(df, "Computer Group")

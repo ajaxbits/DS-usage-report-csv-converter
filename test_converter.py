@@ -3,7 +3,11 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from csv_converter import substring_row_eliminator, extrapolate_column
+from csv_converter import (
+    substring_row_eliminator,
+    extrapolate_column,
+    accounts_extrapolated,
+)
 
 
 class TestEliminator(unittest.TestCase):
@@ -18,20 +22,42 @@ class TestEliminator(unittest.TestCase):
 class TestExtrapolate(unittest.TestCase):
     def test_extrapolation(self):
         df = pd.DataFrame(
-            {"A": [1, 2, 3], "B": ["123456789012345678901234567890123", "123", ""]}
+            {
+                "A": [1, 2, 3],
+                "B": [
+                    "Computers > 876596565555 - APPS - wowowowowo > US West (Oregon)",
+                    "123",
+                    "",
+                ],
+            }
         )
         desired_df = pd.DataFrame(
             {
                 "A": [1, 2, 3],
                 "B": ["123456789012345678901234567890123", "123", ""],
-                "C": ["23", np.nan, np.nan],
+                "C": ["876596565555", "", ""],
             }
         )
         result_df = df
         result_df["C"] = extrapolate_column(df, "B")
-        self.assertEqual(
-            extrapolate_column(df, "B").values.all(), desired_df.values.all()
-        )
+        self.assertEqual(result_df.values.all(), desired_df.values.all())
+
+    # def test_full_functionality(self):
+    #     df = pd.DataFrame(
+    #         {
+    #             "A": [1, 2, 3],
+    #             "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+    #             "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+    #         }
+    #     )
+    #     desired_df = pd.DataFrame(
+    #         {
+    #             "A": [1, 2, 3],
+    #             "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+    #             "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+    #             "Cloud Account Extrapolated": [],
+    #         }
+    #     )
 
 
 if __name__ == "__main__":
