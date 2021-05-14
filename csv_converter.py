@@ -1,6 +1,5 @@
-import csv
 import pandas as pd
-import numpy as np
+import sys
 
 # For L2
 # =IF(LEN(M2)>0,M2,(IF(A2=A1,L1,(IF(LEN(D2)>30,MID(D2,12,13),"")))))
@@ -62,7 +61,10 @@ def order_data_frame(data_frame):
     return data_frame[cols]
 
 
-df = pd.read_csv("Original 2021-04_securitymoduleusage.csv")
+INFILE = sys.argv[1]
+OUTFILE = sys.argv[2]
+
+df = pd.read_csv(INFILE)
 
 no_fly_list = [
     "Computers > Linux \(group 2\) > DPC",
@@ -71,10 +73,15 @@ no_fly_list = [
     "Computers > Linux \(group 2\) > CC",
 ]
 
+print("deleting CC and DPC rows...")
 df = substring_row_eliminator("Computer Group", no_fly_list, df)
+print("Extrapolating Cloud accounts...")
 df = accounts_extrapolated(df)
+print("Further Extrapolation and copying...")
 df = accounts_extrapolated_use_this_one(df)
+print("Sorting rows and columns...")
 df = order_data_frame(df)
-# TODO arrange by computer group and add the second workbook sheet
-
-df.to_csv("modified.csv")
+df = df.sort_values(["Computer Group", "id"])
+# TODO figure out if we can do the multiple sheets thing
+print("Creating CSV...")
+df.to_csv(OUTFILE, index=False)
