@@ -17,41 +17,6 @@ def substring_row_eliminator(
     return data_frame
 
 
-def mid_finder(string: str, desired_length: int) -> str:
-    half_offset = desired_length // 2
-    return string[half_offset : (len(string) - (half_offset + 1))]
-
-
-def is_empty(account) -> bool:
-    return account
-
-
-def l_row_function(
-    previous_id: int,
-    current_id: int,
-    computer_group: str,
-    previous_cloud_account_extrapolated,
-    cloud_account,
-):
-    if is_empty(cloud_account):
-        return cloud_account
-    else:
-        if current_id == previous_id:
-            return previous_cloud_account_extrapolated
-        else:
-            if len(computer_group) > 30:
-                return computer_group[11:13]
-            else:
-                return ""
-
-
-def k_row_function(l2, k1):
-    if np.isnan(l2):
-        return k1
-    else:
-        return l2
-
-
 def extrapolate_column(data_frame: pd.DataFrame, column: str):
     return data_frame[column].str[12:24]
 
@@ -64,17 +29,51 @@ def accounts_extrapolated(data_frame):
     return data_frame
 
 
+def accounts_extrapolated_use_this_one(data_frame):
+    data_frame["Cloud Account Extrapolated (Use This Column)"] = data_frame[
+        "Cloud Account Extrapolated"
+    ].fillna(method="ffill")
+    return data_frame
+
+
+def order_data_frame(data_frame):
+    cols = [
+        "id",
+        "hostname",
+        "Display Name",
+        "Computer Group",
+        "Instance Type",
+        "Start Date",
+        "Start Time",
+        "Stop Date",
+        "Stop Time",
+        "Duration (Seconds)",
+        "Cloud Account Extrapolated (Use This Column)",
+        "Cloud Account Extrapolated",
+        "Cloud Account",
+        "AM",
+        "WRS",
+        "AC",
+        "IM",
+        "LI",
+        "FW",
+        "DPI",
+    ]
+    return data_frame[cols]
+
+
 df = pd.read_csv("Original 2021-04_securitymoduleusage.csv")
-# print(df)
-newdf = accounts_extrapolated(df)
 
 no_fly_list = [
-    # "Computers",
     "Computers > Linux \(group 2\) > DPC",
     "Computers > Windows \(group 1\) > DPC",
     "Computers > Windows \(group 1\) > CC",
     "Computers > Linux \(group 2\) > CC",
 ]
 
-print(df)
-df["test"] = extrapolate_column(df, "Computer Group")
+df = substring_row_eliminator("Computer Group", no_fly_list, df)
+df = accounts_extrapolated(df)
+df = accounts_extrapolated_use_this_one(df)
+df = order_data_frame(df)
+
+df.to_csv("modified.csv")

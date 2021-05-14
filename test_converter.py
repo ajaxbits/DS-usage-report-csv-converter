@@ -7,6 +7,7 @@ from csv_converter import (
     substring_row_eliminator,
     extrapolate_column,
     accounts_extrapolated,
+    accounts_extrapolated_use_this_one,
 )
 
 
@@ -63,6 +64,31 @@ class TestExtrapolate(unittest.TestCase):
             }
         )
         result = accounts_extrapolated(df)
+        pd.testing.assert_frame_equal(result, desired_df)
+
+    def test_full_functionality_use_this_one(self):
+        df = pd.DataFrame(
+            {
+                "A": [1, 2, 3],
+                "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+                "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+                "Cloud Account Extrapolated": ["345678901234", np.nan, np.nan],
+            }
+        )
+        desired_df = pd.DataFrame(
+            {
+                "A": [1, 2, 3],
+                "Computer Group": ["123456789012345678901234567890123", "123", "as"],
+                "Cloud Account": ["duhduhduh", "helloworld", "12345"],
+                "Cloud Account Extrapolated": ["345678901234", np.nan, np.nan],
+                "Cloud Account Extrapolated (Use This Column)": [
+                    "345678901234",
+                    "345678901234",
+                    "345678901234",
+                ],
+            }
+        )
+        result = accounts_extrapolated_use_this_one(df)
         pd.testing.assert_frame_equal(result, desired_df)
 
 
