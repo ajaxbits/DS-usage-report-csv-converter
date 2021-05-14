@@ -58,16 +58,15 @@ def extrapolate_column(data_frame: pd.DataFrame, column: str):
 
 def accounts_extrapolated(data_frame):
     mask = data_frame["Computer Group"].str.len() > 30
-    data_frame_to_extrapolate = data_frame[mask]
-
     data_frame.loc[mask, "Cloud Account Extrapolated"] = extrapolate_column(
-        data_frame_to_extrapolate, "Cloud Account"
+        data_frame, "Computer Group"
     )
     return data_frame
 
 
 df = pd.read_csv("Original 2021-04_securitymoduleusage.csv")
 # print(df)
+newdf = accounts_extrapolated(df)
 
 no_fly_list = [
     # "Computers",

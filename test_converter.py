@@ -34,13 +34,17 @@ class TestExtrapolate(unittest.TestCase):
         desired_df = pd.DataFrame(
             {
                 "A": [1, 2, 3],
-                "B": ["123456789012345678901234567890123", "123", ""],
+                "B": [
+                    "Computers > 876596565555 - APPS - wowowowowo > US West (Oregon)",
+                    "123",
+                    "",
+                ],
                 "C": ["876596565555", "", ""],
             }
         )
         result_df = df
         result_df["C"] = extrapolate_column(df, "B")
-        self.assertEqual(result_df.values.all(), desired_df.values.all())
+        pd.testing.assert_frame_equal(result_df, desired_df)
 
     def test_full_functionality(self):
         df = pd.DataFrame(
@@ -59,9 +63,7 @@ class TestExtrapolate(unittest.TestCase):
             }
         )
         result = accounts_extrapolated(df)
-        self.assertEqual(
-            accounts_extrapolated(df).values.all(), desired_df.values.all()
-        )
+        pd.testing.assert_frame_equal(result, desired_df)
 
 
 if __name__ == "__main__":
