@@ -75,5 +75,6 @@ df = substring_row_eliminator("Computer Group", no_fly_list, df)
 df = accounts_extrapolated(df)
 df = accounts_extrapolated_use_this_one(df)
 df = order_data_frame(df)
+# TODO arrange by computer group and add the second workbook sheet
 
 df.to_csv("modified.csv")
